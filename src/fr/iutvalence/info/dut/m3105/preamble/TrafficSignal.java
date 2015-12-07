@@ -1,32 +1,21 @@
 package fr.iutvalence.info.dut.m3105.preamble;
 
-public class TrafficSignal extends Thread
+public class TrafficSignal extends Thread implements TrafficSignalInterface
 {
-	private final static int BUTTON_THRESHOLD_IN_SECONDS = 2;
-	
 	private TrafficSignalState state;
-	private int stateSecondsRemaining; 
+	protected int stateSecondsRemaining; 
+	
 	
 	public TrafficSignal()
 	{
 		super();
-		this.switchToState(TrafficSignalState.GREEN);
 	}
 
 	public void pressButton()
 	{
 		System.out.println("Button pressed!");
 		System.out.flush();
-		switch (this.state)
-		{
-			case ORANGE: 
-			case RED: return;
-			case GREEN:
-			{
-				if (this.stateSecondsRemaining > BUTTON_THRESHOLD_IN_SECONDS)
-					this.stateSecondsRemaining = BUTTON_THRESHOLD_IN_SECONDS;					
-			}
-		}
+		state.pressButton(this);
 	}
 	
 	public void run()
@@ -45,29 +34,36 @@ public class TrafficSignal extends Thread
 		}
 	}
 
-	private void secondEllapsed()
+	public void setState(TrafficSignalState state)
 	{
-		this.stateSecondsRemaining--;
-		System.out.println(this.stateSecondsRemaining);
-		System.out.flush();
-		if (this.stateSecondsRemaining == 0)
-		{
-			switch(this.state)
-			{
-				case GREEN: 
-					this.switchToState(TrafficSignalState.ORANGE);
-					break;
-				case ORANGE: 
-					this.switchToState(TrafficSignalState.RED);
-					break;
-				case RED: 
-					this.switchToState(TrafficSignalState.GREEN);
-					break;
-			}
-		}	
+		this.state = state;
+	}
+	
+	public void secondEllapsed()
+	{
+		state.secondEllapsed(this);
+		
+//		this.stateSecondsRemaining--;
+//		System.out.println(this.stateSecondsRemaining);
+//		System.out.flush();
+//		if (this.stateSecondsRemaining == 0)
+//		{
+//			switch(this.state)
+//			{
+//				case GREEN: 
+//					this.switchToState(TrafficSignalState.ORANGE);
+//					break;
+//				case ORANGE: 
+//					this.switchToState(TrafficSignalState.RED);
+//					break;
+//				case RED: 
+//					this.switchToState(TrafficSignalState.GREEN);
+//					break;
+//			}
+//		}	
 	}
 
-	private void switchToState(TrafficSignalState state)
+	public void switchToState()
 	{
 		System.out.println("Traffic signal turns "+state);
 		System.out.flush();

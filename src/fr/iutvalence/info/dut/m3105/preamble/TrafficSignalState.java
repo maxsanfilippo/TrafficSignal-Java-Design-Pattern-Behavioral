@@ -1,8 +1,7 @@
 package fr.iutvalence.info.dut.m3105.preamble;
 
-public enum TrafficSignalState
+public abstract class TrafficSignalState
 {
-	GREEN(10), ORANGE(2), RED(10);
 	
 	private final int durationInSeconds;
 	
@@ -10,6 +9,10 @@ public enum TrafficSignalState
 	{
 		this.durationInSeconds = durationInSeconds;
 	}
+	
+	public void pressButton(TrafficSignal ts){};
+	
+	public abstract void secondEllapsed(TrafficSignal ts);
 	
 	public int getDurationInSeconds()
 	{
